@@ -16,5 +16,6 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::post('/auth/login', 'Auth\LoginController@login');
 
 Route::get('/home', 'HomeController@index');
