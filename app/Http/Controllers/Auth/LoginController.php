@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\loginRequest;
 use App\User;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\AuthenticationException;
+//use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -37,15 +40,21 @@ class LoginController extends Controller
     private $consumerApp;
 
     /**
+     * 
+     */
+    private $auth;
+
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
     public function __construct(Application $app)
     {
-        $this->middleware('guest', ['except' => 'logout']);
+        //$this->middleware('guest', ['except' => 'logout']);
+        //$this->middleware('auth:api', ['except' => 'login']);
         $this->consumerApp = $app->make('apiconsumer');
-
+        $this->auth = $app->make('auth');
     }
 
     protected function guard()
@@ -60,13 +69,16 @@ class LoginController extends Controller
 
         $user = User::where('email', $email)->first();
 
-        //dd($user->toArray());
+        //dd($request->get('email'));
         if(!is_null($user)) {
             return $this->getToken('password', [
                                    'username' => $email,
                                    'password' => $password
                                     ]);     
         }
+        throw new AuthenticationException;
+
+        //return response('login failed', 401)->header('Content-Type', 'application/json');
     }
 
     private function getToken($grantType, array $data = [])
@@ -79,7 +91,8 @@ class LoginController extends Controller
         $response = $this->consumerApp->post('oauth/token', $data);
         //dd($response);
         if (!$response->isSuccessful()) {
-            abort(500, 'invalid credential');
+            //abort(500, 'invalid credential');
+            throw new AuthenticationException;
         }
 
         $data = json_decode($response->getContent());
@@ -92,6 +105,23 @@ class LoginController extends Controller
 
     public function logout()
     {
-        //
+        $accessToken = $this->auth->user()->token();
+
+
+        DB::table('oauth_refresh_tokens')
+                    ->where('access_token_id', $accessToken->id)
+                    ->update([
+                        'revoked' => true
+                    ]);
+
+
+        //if($accessToken)
+        $accessToken->revoke();
+
+        //dd($this->auth->user()->token()->toArray());
+        
+        return response(null, 204);
+        //$accessToken = ;
+        //dd($this->auth->user()->token()->toArray());
     }   
 }
