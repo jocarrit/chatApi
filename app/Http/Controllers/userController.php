@@ -4,25 +4,54 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\userRequest;
-use App\User;
+use App\Http\Requests\userUpdateRequest;
+use App\Users\User;
+use App\Users\UserRepository;
 
 class userController extends Controller
 {
+	/**
+	 * UserRepository Instance
+	 *
+	 * @var UserRepository
+	 */
+	protected $users;
+
+	/**
+	 * Controller Instance
+	 *
+	 * @param UserRepository $users
+	 * @return void
+	 */
+	public function __construct(UserRepository $users)
+	{
+		$this->users = $users;
+	}
+    
+    /**
+     * Stores new users
+     *
+     * @param userRequest
+     * @return User
+     */
     public function store(userRequest $request)
     {
-    	$user = new User;
-
-    	$user->name = $request->name;
-    	$user->password = bcrypt($request->password);
-    	$user->email = $request->email;
-
-    	$user->save();
-
-    	return $user->where('email', $request->email)->first();
+    	return $this->users->create($request);
     }
 
+    /**
+     * Shows user profile
+     *
+     * @param Request
+     * @return Collection
+     */
     public function index(Request $request)
     {
-    	return $request->user();
+    	return $this->users->current($request);
+    }
+
+    public function update(userUpdateRequest $request)
+    {
+    	return $this->users->update($request);
     }
 }

@@ -15,11 +15,11 @@ class ApiAuthTest extends TestCase
 
     public function test_auth_gives_token()
     {
-        factory(App\User::class, 1)->create([
+        factory(App\Users\User::class, 1)->create([
             'email' => 'test@testing.dev',
         ]);
         
-        $user = \App\User::where('email', 'test@testing.dev')->first();
+        $user = \App\Users\User::where('email', 'test@testing.dev')->first();
 
         $response = $this->appLogin($user->email, 'secret');
         
@@ -62,26 +62,19 @@ class ApiAuthTest extends TestCase
 
     public function test_invalid_credential_error() 
     {
-        $user = factory(App\User::class, 1)->make([
+        $user = factory(App\Users\User::class, 1)->make([
             'email' => 'test@testing.dev',
         ]);
-
-        $errors = [
-            "message" => "Unauthenticated",
-            "errors"  => [
-                "name" => [
-                        ""
-                ]],
-            "meta" => ""
-        ];
 
         $response = $this->json('POST', '/auth/login', [
                      'email' => 'test@testing.dev',
                      'password' => 'wrong']);
         
         //$u = User::find();
-        dd($response);
+        //dd($response);
         $response->assertStatus(401)
-                 ->assertJson(["message" => true]);
+                 ->assertJson(["message" => true, 
+                               "errors" => true])
+                 ->assertSee('Unauthenticated');
     }
 }
