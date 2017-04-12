@@ -20,4 +20,9 @@ class userController extends Controller
 
     	return $user->where('email', $request->email)->first();
     }
+
+    public function index(Request $request)
+    {
+    	return $request->user();
+    }
 }
