@@ -14,7 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        App\Chats\Chat::class => App\Policies\ChatPolicy::class,
     ];
 
     /**
@@ -26,6 +26,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Gate::define('update-chat', function ($user, $chat) {
+            return $user->id == $chat->user_id;
+        });
         Passport::routes();
     
     }

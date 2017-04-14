@@ -5,6 +5,8 @@ namespace App\Users;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
+use App\Chats\Chat;
+use App\Messages\Message;
 
 class User extends Authenticatable
 {
@@ -27,4 +29,20 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * The User messages
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::Class);
+    }
+
+    /**
+     * The chats user has created
+     */
+    public function chats()
+    {
+        return $this->hasMany(Chat::Class);
+    }
 }

@@ -13,12 +13,12 @@ class CreateChatUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('chat-user', function(Blueprint $table) {
-            $table->increments('id');
-            $table->integer('user-id');
-            $table->integer('chat-id');
+        // Schema::create('chat_user', function(Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->integer('chat_id');
+        //     $table->integer('user_id');
 
-        });
+        // });
     }
 
     /**

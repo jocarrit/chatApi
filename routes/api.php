@@ -10,6 +10,16 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 	Route::get('/users/current', 'userController@index');
 
+	Route::post('/chats', 'chatController@store');
+
+	Route::get('/chats/list', 'chatController@index');
+
+	Route::post('chats/{id}', 'chatController@update');
+
+	Route::post('chats/{id}/chatmessages', 'messageController@store');
+
+	Route::get('chats/{id}/chatmessages', 'messageController@index');
+
 });
 
 

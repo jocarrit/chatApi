@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 
@@ -20,7 +21,7 @@ class Handler extends ExceptionHandler
         \Symfony\Component\HttpKernel\Exception\HttpException::class,
         \Illuminate\Database\Eloquent\ModelNotFoundException::class,
         \Illuminate\Session\TokenMismatchException::class,
-       // \Illuminate\Validation\ValidationException::class,
+        \Illuminate\Validation\ValidationException::class,
     ];
 
     /**
@@ -45,6 +46,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        
+        if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
+            return $this->unauthorize($request, $exception);
+        }
+
         return parent::render($request, $exception);
     }
 
@@ -75,10 +81,33 @@ class Handler extends ExceptionHandler
         return redirect()->guest(route('login'));
     }
 
+    protected function unauthorize($request, AuthorizationException $exception)
+    {
+        $errors = [
+            "message" => "Unauthorized",
+            "errors"  => [
+                "name" => [
+                        ""
+                ]],
+            "meta" => ""
+        ];
+
+        if ($request->expectsJson()) {
+            //return response()->json(['error' => 'Unauthenticated.'], 401);
+            //dd($request->headers);
+            return response()->json($errors, 403);
+        }
+
+        return redirect()->guest(route('login'));
+
+    }
+
     protected function validationFailed($request, ValidationException $exception)
     {
         if ($request->expectsJson()) {  
-            return response()->json('validation faileddd', 422);
+            return response()->json('validation failed', 422);
         }
     }
+
+
 }
