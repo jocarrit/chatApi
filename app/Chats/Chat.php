@@ -17,12 +17,16 @@ class Chat extends Model
     	'name',
     ];
 
-    protected $with = [
-    	'user', 'messages',
+    protected $hidden = [
+        'user_id', 'created_at', 'updated_at', 'user'
+    ];
+
+    protected $appends = [
+        'users', 'last_chat_message',
     ];
 
     /**
-     * The users who creaated the chat
+     * The user who creaated the chat
      */
     public function user()
     {
@@ -33,6 +37,18 @@ class Chat extends Model
     {
     	return $this->hasMany(Message::Class);
     }
+
+    public function getlastChatMessageAttribute()
+    {
+        return $this->messages()->orderBy('id', 'desc')->first();
+    }
+
+    public function getUsersAttribute()
+    {
+        return $this->user;
+    }
+
+
 
 
 }

@@ -7,6 +7,11 @@ use App\Messages\Message;
 use App\Chats\Chat;
 use App\Http\Requests\messageRequest;
 use \Carbon\Carbon;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use League\Fractal\Pagination\Cursor;
+use App\Transformers\messageTransformer;
+use \Fractal;
 
 class MessageController extends Controller
 {
@@ -20,14 +25,19 @@ class MessageController extends Controller
     	$message->created_at = Carbon::now();
     	$message->save();
 
-    	return Message::find($message->id)->message;
+    	return Fractal::create($message, new messageTransformer())->toArray();
     }
 
     public function index(Request $request, $id)
     {
-    	$chat = Chat::find($id);
+    	//$chat = Chat::find($id);
+        $paginator = Message::where('chat_id', $id)->paginate($request->limit);
+        $messages = $paginator->getCollection();
    
-    	return $chat->messages;
+    	return Fractal::create()
+            ->collection($messages, new messageTransformer())
+            ->paginateWith(new IlluminatePaginatorAdapter($paginator))
+            ->toArray();
     	
     }
 }

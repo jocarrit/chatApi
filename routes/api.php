@@ -12,7 +12,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 	Route::post('/chats', 'chatController@store');
 
-	Route::get('/chats/list', 'chatController@index');
+	Route::get('/chats', 'chatController@index');
 
 	Route::post('chats/{id}', 'chatController@update');
 

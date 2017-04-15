@@ -9,7 +9,9 @@
         "laravel/framework": "5.4.*",
         "laravel/passport": "^2.0",
         "laravel/tinker": "~1.0",
-        "optimus/api-consumer": "^0.2.3"
+        "optimus/api-consumer": "^0.2.3",
+        "spatie/fractalistic": "^1.0",
+        "spatie/laravel-fractal": "^3.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

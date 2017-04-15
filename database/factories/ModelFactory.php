@@ -22,3 +22,27 @@ $factory->define(App\Users\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\Chats\Chat::class, function (Faker\Generator $faker) {
+
+    return [
+        'name' => $faker->name,
+        'user_id' => function () {
+            return factory(App\Users\User::class)->create()->id;
+        }
+    ];
+});
+
+$factory->define(App\Messages\Message::class, function (Faker\Generator $faker) {
+    static $password;
+
+    return [
+        'message' => $faker->sentence,
+        'user_id' => function () {
+            return factory(App\Users\User::class)->create()->id;
+        },
+        'chat_id' => function () {
+            return factory(App\Chats\Chat::class)->create()->id;
+        }
+    ];
+});
