@@ -15,9 +15,9 @@ class messageTransformer extends TransformerAbstract
     public function transform(Message $message)
     {
         return [
-            'id' => $message->id,
-            'chat_id' => $message->chat_id,
-            'user_id' => $message->user_id,
+            'id' => (int)$message->id,
+            'chat_id' => (int)$message->chat_id,
+            'user_id' => (int)$message->user_id,
             'message' => $message->message,
             'created_at' => $message->created_at,
             'user' => $message->user(),

@@ -15,7 +15,7 @@ class chatTransformer extends TransformerAbstract
     public function transform(Chat $chat)
     {
         return [
-            'id' => $chat->id,
+            'id' => (int)$chat->id,
             'name' => $chat->name,
             'users' => $chat->users,
             'last_chat_message' => $chat->last_chat_message
