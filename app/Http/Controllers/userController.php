@@ -7,6 +7,11 @@ use App\Http\Requests\userRequest;
 use App\Http\Requests\userUpdateRequest;
 use App\Users\User;
 use App\Users\UserRepository;
+use App\Transformers\userTransformer;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use League\Fractal\Pagination\Cursor;
+use \Fractal;
 
 class userController extends Controller
 {
@@ -36,7 +41,9 @@ class userController extends Controller
      */
     public function store(userRequest $request)
     {
-    	return $this->users->create($request);
+    	$user = $this->users->create($request);
+
+        return Fractal::create($user, new userTransformer())->toArray();
     }
 
     /**
@@ -45,13 +52,18 @@ class userController extends Controller
      * @param Request
      * @return Collection
      */
-    public function index(Request $request)
+    public function show(Request $request)
     {
-    	return $this->users->current($request);
+    	$user = $this->users->current($request);
+
+        return Fractal::create($user, new userTransformer())
+        ->toArray();
     }
 
     public function update(userUpdateRequest $request)
     {
-    	return $this->users->update($request);
+        $user = $this->users->update($request);
+
+        return Fractal::create($user, new userTransformer())->toArray();
     }
 }

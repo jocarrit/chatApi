@@ -51,6 +51,10 @@ class Handler extends ExceptionHandler
             return $this->unauthorize($request, $exception);
         }
 
+        if ($exception instanceof Illuminate\Validation\ValidationException) {
+            return $this->validationFailed($request, $exception);
+        }
+
         return parent::render($request, $exception);
     }
 

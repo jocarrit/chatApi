@@ -33,6 +33,22 @@ $factory->define(App\Chats\Chat::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->state(App\Chats\Chat::class, 'testing', function (Faker\Generator $faker) {
+
+    return [
+        'name' => 'testing',
+        'user_id' => 88
+    ];
+});
+
+$factory->state(App\Messages\Message::class, 'testing', function (Faker\Generator $faker) {
+    return [
+        'message' => 'testing',
+        'user_id' => 88
+    ];
+
+});
+
 $factory->define(App\Messages\Message::class, function (Faker\Generator $faker) {
     static $password;
 
