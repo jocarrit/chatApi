@@ -7,12 +7,6 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
-use App\Transformers\errorTransformer;
-use League\Fractal\Resource\Collection;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use \Fractal;
-use Illuminate\Contracts\Validation\Validator;
-
 
 class Handler extends ExceptionHandler
 {
@@ -57,11 +51,10 @@ class Handler extends ExceptionHandler
             return $this->unauthorize($request, $exception);
         }
 
-        if ($exception instanceof Illuminate\ValidationException\ValidationException) {
-            
+        if ($exception instanceof Illuminate\Validation\ValidationException) {
             return $this->validationFailed($request, $exception);
         }
-        dd($exception->errors());
+
         return parent::render($request, $exception);
     }
 
@@ -74,13 +67,19 @@ class Handler extends ExceptionHandler
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        $exception = collect(['message' => 'Unauthenticated', 'errors' => '']);
-        
-        $message = Fractal::create('Unauthenticated', new errorTransformer())->serializeWith(new \Spatie\Fractalistic\ArraySerializer())->toArray();
+        $errors = [
+            "message" => "Unauthenticated",
+            "errors"  => [
+                "name" => [
+                        ""
+                ]],
+            "meta" => ""
+        ];
 
         if ($request->expectsJson()) {
-
-            return response()->json($message, 401);
+            //return response()->json(['error' => 'Unauthenticated.'], 401);
+            //dd($request->headers);
+            return response()->json($errors, 401);
         }
 
         return redirect()->guest(route('login'));
@@ -109,13 +108,8 @@ class Handler extends ExceptionHandler
 
     protected function validationFailed($request, ValidationException $exception)
     {
-        $validator = new Validator();
-        $exception = collect(['message' => 'Unauthenticated', 'errors' => $validator]);
-        
-        $message = Fractal::create($exception, new errorTransformer())->serializeWith(new \Spatie\Fractalistic\ArraySerializer())->toArray();
-        //dd($Validator);
         if ($request->expectsJson()) {  
-            return response()->json($message, 422);
+            return response()->json('validation failed', 422);
         }
     }
 
