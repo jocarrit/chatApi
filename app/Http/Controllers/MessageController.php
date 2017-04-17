@@ -12,26 +12,54 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Pagination\Cursor;
 use App\Transformers\messageTransformer;
 use \Fractal;
+use App\Messages\MessageRepository;
 
 class MessageController extends Controller
 {
+
+    /**
+     * the MessageRepository instance
+     */
+    protected $message;
+
+    /**
+     * The controller instance
+     * 
+     * @param MessageRepository $message 
+     */
+    public function __construct(MessageRepository $message)
+    {
+        $this->message = $message;
+
+    }
+
+    /**
+     * Stores a new message for a given chat
+     * 
+     * @param  messageRequest $request 
+     * @param  int            $id      the chat id
+     * @param  Chat           $chat    
+     * 
+     * @return Json              
+     */
     public function store(messageRequest $request, $id, Chat $chat)
     {
-    	$message = new Message;
-
-        $message->chat_id = $id;
-    	$message->message = $request->message;
-    	$message->user_id = $request->user()->id;
-    	$message->created_at = Carbon::now();
-    	$message->save();
+    	$message = $this->message->create($request, $id);
 
     	return Fractal::create($message, new messageTransformer())->toArray();
     }
 
+    /**
+     * lists messages for a given chat
+     * @param  Request $request 
+     * @param  int  $id      the chat id
+     * 
+     * @return  Json
+     */
     public function index(Request $request, $id)
     {
     	//$chat = Chat::find($id);
-        $paginator = Message::where('chat_id', $id)->paginate($request->limit);
+        $paginator = $this->message->listForChat($id, $request->limit);
         $messages = $paginator->getCollection();
    
     	return Fractal::create()

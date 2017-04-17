@@ -26,11 +26,10 @@ class usersTest extends TestCase
     											  'email' => 'robStark@winterfell.com',
     											  'password' => 'secret',
     											  'password_confirmation' => 'secret'], ['Authorization' => 'Bearer '.$token->access_token]);
-
+        
         $response->assertStatus(200)
-        		 ->assertJson(["id" => true,
-        		 			  "name" => true,
-        		 			  "email" => true]);
+        		 ->assertJsonFragment(['name' => 'Rob Stark',
+        		 			           'email' => 'robStark@winterfell.com']);
     }
 
     public function test_User_creation_form_not_past_validation ()
@@ -54,10 +53,7 @@ class usersTest extends TestCase
     	$response = $this->json('GET', '/users/current', [], ['Authorization' => 'Bearer '.$token->access_token]);
 
     	$response->assertStatus(200)
-    			 ->assertJson(['id' => true,
-    			 			   'email' => true,
-    			 			   'name' => true])
-    			 ->assertSee('test@testing.com');
+    			 ->assertJsonFragment(['email' => 'test@testing.com']);
 
     }
 
@@ -71,11 +67,8 @@ class usersTest extends TestCase
     											  ['Authorization' => 'Bearer '.$token->access_token]);
 
         $response->assertStatus(200)
-        		 ->assertJson(["id" => true,
-        		 			  "name" => true,
-        		 			  "email" => true])
-        		 ->assertSee('testupdated@winterfell.com')
-        		 ->assertSee('Rob Stark');
+        		 ->assertJsonFragment(['name' => 'Rob Stark',
+        		 			  'email' => 'testupdated@winterfell.com']);
     }
 
     private function appLogin($email, $password)

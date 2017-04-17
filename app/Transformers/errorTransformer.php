@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
+use Illuminate\Contracts\Validation\Validator;
 
 class errorTransformer extends TransformerAbstract
 {
@@ -11,10 +12,12 @@ class errorTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform()
+    public function transform($message)
     {
+
         return [
-            //
-        ];
+            'message' => $message,
+            'errors' => isset($message->errors) ? $message->errors : '',
+            ];
     }
 }
