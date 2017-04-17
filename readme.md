@@ -14,6 +14,10 @@ $ git clone git@github.com:jocarr/chatApi.git
 ```	
 $ composer update
 ```
+- Generate App key
+```
+$ php artisan key:generate
+```
 - Run Migrations
 ```	
 $ php artisan migrate
