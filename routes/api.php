@@ -8,7 +8,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 	Route::patch('/users/current', 'userController@update');
 
-	Route::get('/users/current', 'userController@index');
+	Route::get('/users/current', 'userController@show');
 
 	Route::post('/chats', 'chatController@store');
 
