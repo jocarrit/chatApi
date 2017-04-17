@@ -60,7 +60,7 @@ class chatMessagesTest extends TestCase
         
         factory(Chat::class, 1)->states('testing')->create(['id' => 40, 'user_id' => 33]);
         
-        $chat = Chat::find(33);
+        $chat = Chat::find(40);
 
         $response = $this->json('POST', '/chats/'.$chat->id.'/chatmessages', [
                                                    'message' => 'go to movies'
