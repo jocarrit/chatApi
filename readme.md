@@ -81,9 +81,6 @@ Every endpoint described by the challenge is tested, at least with one test
 ```
 $ vendor\bin\phpunit
 ``` 
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
