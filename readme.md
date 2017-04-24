@@ -52,6 +52,16 @@ php artisan key:generate
 $ mysql
 $ CREATE DATABASE Chat
 ```
+- Change the name of env.example file to .env, then open it and set up your database credentials
+
+```	
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=chat
+DB_USERNAME=user	
+DB_PASSWORD=secret
+```	
 
 - Then, run Migrations, to get the database structure
 
